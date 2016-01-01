@@ -110,6 +110,8 @@ class GazeboMotorModel : public MotorModel, public ModelPlugin {
 
   int motor_number_;
   int turning_direction_;
+  
+  bool reversible_;
 
   double max_force_;
   double max_rot_velocity_;

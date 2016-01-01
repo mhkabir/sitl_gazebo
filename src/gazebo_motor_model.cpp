@@ -69,7 +69,11 @@ void GazeboMotorModel::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf) {
     motor_number_ = _sdf->GetElement("motorNumber")->Get<int>();
   else
     gzerr << "[gazebo_motor_model] Please specify a motorNumber.\n";
-
+  
+  if(_sdf->HasElement("reversible"))
+    reversible_ = _sdf->GetElement("reversible")->Get<bool>();
+    // TODO print feedback
+  
   if (_sdf->HasElement("turningDirection")) {
     std::string turning_direction = _sdf->GetElement("turningDirection")->Get<std::string>();
     if (turning_direction == "cw")
@@ -79,8 +83,10 @@ void GazeboMotorModel::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf) {
     else
       gzerr << "[gazebo_motor_model] Please only use 'cw' or 'ccw' as turningDirection.\n";
   }
-  else
-    gzerr << "[gazebo_motor_model] Please specify a turning direction ('cw' or 'ccw').\n";
+  else if(!_sdf->HasElement("turningDirection") && reversible_){
+ // TODO print feedback
+  }
+  else gzerr << "[gazebo_motor_model] Please specify a turning direction ('cw' or 'ccw').\n";
 
   getSdfParam<std::string>(_sdf, "commandSubTopic", command_sub_topic_, command_sub_topic_);
   getSdfParam<std::string>(_sdf, "motorSpeedPubTopic", motor_speed_pub_topic_,
@@ -188,7 +194,12 @@ void GazeboMotorModel::UpdateForcesAndMoments() {
   // Apply the filter on the motor's velocity.
   double ref_motor_rot_vel;
   ref_motor_rot_vel = rotor_velocity_filter_->updateFilter(ref_motor_rot_vel_, sampling_time_);
-  joint_->SetVelocity(0, turning_direction_ * ref_motor_rot_vel / rotor_velocity_slowdown_sim_);
+  if(!reversible_) {
+  	joint_->SetVelocity(0, turning_direction_ * ref_motor_rot_vel / rotor_velocity_slowdown_sim_);
+  }
+  else	{
+  	joint_->SetVelocity(0, ref_motor_rot_vel / rotor_velocity_slowdown_sim_);
+  }
 }
 
 GZ_REGISTER_MODEL_PLUGIN(GazeboMotorModel);
