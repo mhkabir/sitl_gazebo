@@ -72,8 +72,6 @@ void GazeboMotorModel::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf) {
   
   if(_sdf->HasElement("reversible")) {
     reversible_ = _sdf->GetElement("reversible")->Get<bool>();
-    if(reversible_) std::cout  << "Motor has reversing support" << std::endl;
-    else	    std::cout  << "No reversing support" << std::endl;
   }
   
   if (_sdf->HasElement("turningDirection")) {
