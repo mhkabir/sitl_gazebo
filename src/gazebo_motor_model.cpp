@@ -70,9 +70,11 @@ void GazeboMotorModel::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf) {
   else
     gzerr << "[gazebo_motor_model] Please specify a motorNumber.\n";
   
-  if(_sdf->HasElement("reversible"))
+  if(_sdf->HasElement("reversible")) {
     reversible_ = _sdf->GetElement("reversible")->Get<bool>();
-    // TODO print feedback
+    if(reversible_) std::cout  << "Motor has reversing support" << std::endl;
+    else	    std::cout  << "No reversing support" << std::endl;
+  }
   
   if (_sdf->HasElement("turningDirection")) {
     std::string turning_direction = _sdf->GetElement("turningDirection")->Get<std::string>();
@@ -83,10 +85,9 @@ void GazeboMotorModel::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf) {
     else
       gzerr << "[gazebo_motor_model] Please only use 'cw' or 'ccw' as turningDirection.\n";
   }
-  else if(!_sdf->HasElement("turningDirection") && reversible_){
- // TODO print feedback
+  else if(!reversible_ && !_sdf->HasElement("turningDirection")){
+      gzerr << "[gazebo_motor_model] Please specify a turning direction ('cw' or 'ccw').\n";
   }
-  else gzerr << "[gazebo_motor_model] Please specify a turning direction ('cw' or 'ccw').\n";
 
   getSdfParam<std::string>(_sdf, "commandSubTopic", command_sub_topic_, command_sub_topic_);
   getSdfParam<std::string>(_sdf, "motorSpeedPubTopic", motor_speed_pub_topic_,
