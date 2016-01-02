@@ -12,5 +12,8 @@
     <include>
       <uri>model://nanosat</uri>
     </include>
+    <physics type="ode">
+    	<gravity> 0 0 -0.00001 </gravity>
+    </physics>
   </world>
 </sdf>
