@@ -242,7 +242,7 @@ void GazeboMavlinkInterface::HilControlCallback(HilControlPtr &rmsg) {
 
     // publish message
     double scaling = 150;
-    double offset = 600;
+    double offset = 0;
 
     mav_msgs::msgs::CommandMotorSpeed* turning_velocities_msg = new mav_msgs::msgs::CommandMotorSpeed;
 
@@ -388,7 +388,7 @@ void GazeboMavlinkInterface::handle_message(mavlink_message_t *msg)
 
     // publish message
     double scaling = 340;
-    double offset = 500;
+    double offset = 0;
 
     input_reference_.resize(_rotor_count);
 
